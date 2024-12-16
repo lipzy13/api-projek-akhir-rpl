@@ -1,4 +1,10 @@
-import { createAnggotaHandler, deleteAnggotaHandler, getAllAnggotaHandler, getAnggotaByIdHandler, updateAnggotaHandler } from "./controllers/AnggotaController.ts";
+import {
+  createAnggotaHandler,
+  deleteAnggotaHandler,
+  getAllAnggotaHandler,
+  getAnggotaByIdHandler,
+  updateAnggotaHandler,
+} from "./controllers/AnggotaController.ts";
 import {
   createBudayaHandler,
   deleteBudayaHandler,
@@ -11,6 +17,18 @@ Deno.serve(async (req): Promise<Response> => {
   const url = new URL(req.url);
   const path = url.pathname;
   const id = path.split("/")[2];
+
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: new Headers({
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400"
+      }),
+    });
+  }
 
   if (path.startsWith("/budaya")) {
     if (req.method === "GET" && !id) {
@@ -102,8 +120,7 @@ Deno.serve(async (req): Promise<Response> => {
         });
       }
     }
-  }
-  else if (path.startsWith("/anggota")) {
+  } else if (path.startsWith("/anggota")) {
     if (req.method === "GET" && !id) {
       try {
         const allAnggota = await getAllAnggotaHandler(req);
@@ -196,4 +213,6 @@ Deno.serve(async (req): Promise<Response> => {
   }
 
   return new Response("Not found");
-});
+
+}
+);
